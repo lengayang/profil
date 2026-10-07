@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GuruSeni AI - Prototipe</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1f1d1a; --muted:#6b665d; --line:#e4dfd4;
+  --brand:#b4402b; --brand-ink:#ffffff; --accent:#1f6f6b; --ok:#2e7d4f; --warn:#b7791f;
+  --chip:#efe9dc;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#161512; --card:#201e1a; --ink:#f1ede4; --muted:#a39d90; --line:#36322b;
+  --brand:#e0674f; --brand-ink:#1a0d09; --accent:#5fb7b1; --ok:#6cc58f; --warn:#e3b04f; --chip:#2c2923;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card)}
+.logo{font-weight:700;font-size:18px;letter-spacing:.2px}
+.logo span{color:var(--brand)}
+.badge{background:var(--chip);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
+.demo{background:var(--chip);color:var(--muted);font-size:12.5px;padding:8px 16px;border-bottom:1px solid var(--line)}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
+nav button .n{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:var(--chip);font-size:12px;margin-right:6px}
+nav button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+nav button.on .n{background:rgba(255,255,255,.25);color:inherit}
+main{max-width:1050px;margin:0 auto;padding:18px 16px 60px}
+h2{margin:6px 0 4px;font-size:21px}
+p.sub{margin:0 0 16px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.nilgrid{grid-template-columns:260px 1fr}
+@media(max-width:760px){.g2,.g3,.nilgrid{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+select,input,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:90px;resize:vertical}
+.btn{border:0;background:var(--brand);color:var(--brand-ink);padding:10px 18px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ok{background:var(--ok);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stat{font-size:28px;font-weight:700}
+.stat small{display:block;font-size:13px;font-weight:400;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+.tabs button{border:0;background:none;color:var(--muted);padding:8px 12px;cursor:pointer;font:inherit;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--brand);font-weight:600}
+.doc h3{margin:14px 0 4px;font-size:15px}
+.doc ul,.doc ol{margin:4px 0 8px;padding-left:20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.scroll{overflow-x:auto}
+.queue{list-style:none;margin:0;padding:0}
+.queue li{display:flex;gap:10px;align-items:center;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.queue li.on{border-color:var(--brand);background:var(--chip)}
+.queue li svg{width:54px;height:40px;border-radius:6px;flex:0 0 auto}
+.queue .nm{flex:1;font-weight:600;font-size:14px}
+.pill{font-size:11.5px;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--muted);white-space:nowrap}
+.pill.s2{background:rgba(183,121,31,.18);color:var(--warn)}
+.pill.s3{background:rgba(46,125,79,.18);color:var(--ok)}
+.art svg{width:100%;height:auto;border-radius:10px;display:block}
+.crit{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.crit .d{font-size:12.5px;color:var(--muted)}
+.score{display:flex;gap:4px}
+.score button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font:inherit;font-weight:600}
+.score button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.fb{background:var(--chip);border-radius:10px;padding:12px 14px;margin-top:12px}
+.fb b{display:block;font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:r .8s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes r{to{transform:rotate(360deg)}}
+.bar{height:10px;background:var(--chip);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .4s}
+.note{font-size:13px;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Guru<span>Seni</span> AI</div>
+  <div class="row"><span class="badge">Seni Rupa · Fase F · Kelas XI-3</span><span class="badge">Guru: Masri</span></div>
+</header>
+<div class="demo">Prototipe demo dengan data fiktif. Penilaian AI disimulasikan di browser, belum terhubung ke model AI. Nilai akhir selalu keputusan guru.</div>
+
+<nav id="nav"></nav>
+<main id="view"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Data ---------- */
+const RUBRIC = [
+  {k:'ekspresi', n:'Ekspresi emosi', d:{4:'Emosi sangat kuat dan terbaca jelas',3:'Emosi cukup kuat',2:'Emosi lemah',1:'Emosi tidak tampak'}},
+  {k:'warna',    n:'Penggunaan warna', d:{4:'Kontras berani dan mendukung tema',3:'Cukup sesuai tema',2:'Monoton',1:'Tidak sesuai tema'}},
+  {k:'komposisi',n:'Komposisi', d:{4:'Seimbang dengan fokus jelas',3:'Fokus kurang jelas',2:'Kurang seimbang',1:'Tidak terstruktur'}},
+  {k:'goresan',  n:'Teknik goresan', d:{4:'Variatif dan percaya diri',3:'Cukup terkontrol',2:'Ragu-ragu',1:'Tidak ada variasi'}}
+];
+const FB = {
+  ekspresi:{hi:'Emosi karya terasa kuat dan langsung terbaca penonton.', lo:'Emosi belum terbaca jelas; perkuat lewat pilihan tema dan intensitas goresan.', tip:'Tulis satu kata emosi (misalnya "gelisah") lalu buat sketsa ulang yang hanya melayani kata itu.'},
+  warna:{hi:'Kontras warna berani dan mendukung suasana ekspresionis.', lo:'Palet warna masih monoton; tambahkan satu warna kontras.', tip:'Batasi palet menjadi 3 warna, lalu tambahkan satu warna komplementer sebagai aksen.'},
+  komposisi:{hi:'Komposisi seimbang dengan titik fokus yang jelas.', lo:'Objek utama tersebar sehingga mata penonton tidak punya fokus.', tip:'Geser objek utama ke sepertiga kanan atau kiri kanvas dan kurangi elemen pengganggu.'},
+  goresan:{hi:'Goresan variatif dan percaya diri.', lo:'Goresan masih ragu-ragu dan kurang variasi.', tip:'Latih sapuan panjang tebal-tipis di kertas koran selama 5 menit sebelum melukis.'}
+};
+const PALETTES = [
+  ['#1b2a6b','#d62828','#f7b538','#0b132b'],
+  ['#2a9d8f','#e76f51','#264653','#f4a261'],
+  ['#5f0f40','#fb8b24','#0f4c5c','#e36414'],
+  ['#3a0ca3','#f72585','#4cc9f0','#ffd60a'],
+  ['#2b2d42','#ef233c','#8d99ae','#edf2f4'],
+  ['#386641','#bc4749','#f2e8cf','#6a994e']
+];
+const NAMES = ['Rani A.','Dimas P.','Salsa N.','Fikri H.','Nadia R.','Arif M.','Putri L.','Zaki F.'];
+
+const state = {
+  view:0, genTab:0, generated:false, selected:0,
+  students: NAMES.map((n,i)=>({id:i,name:n,seed:i*7+3,status:0,scores:null,fb:null,loading:false}))
+};
+
+/* ---------- Helpers ---------- */
+function rng(seed){let s=seed>>>0||1;return()=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return (s%100000)/100000;}}
+function $(s,el=document){return el.querySelector(s)}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),1800)}
+function total(sc){return sc.reduce((a,b)=>a+b,0)}
+function nilai(sc){return Math.round(total(sc)/16*100)}
+
+function art(seed){
+  const r=rng(seed*97+11), p=PALETTES[seed%PALETTES.length];
+  let s=`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Karya siswa (ilustrasi)">`;
+  s+=`<defs><linearGradient id="g${seed}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p[3]}"/><stop offset="1" stop-color="${p[0]}"/></linearGradient></defs>`;
+  s+=`<rect width="400" height="300" fill="url(#g${seed})"/>`;
+  for(let i=0;i<16;i++){
+    const c=p[Math.floor(r()*p.length)], w=4+r()*22;
+    const x1=r()*400,y1=r()*300,x2=r()*400,y2=r()*300,cx=r()*400,cy=r()*300;
+    s+=`<path d="M${x1.toFixed(0)} ${y1.toFixed(0)} Q${cx.toFixed(0)} ${cy.toFixed(0)} ${x2.toFixed(0)} ${y2.toFixed(0)}" stroke="${c}" stroke-width="${w.toFixed(1)}" stroke-linecap="round" fill="none" opacity="${(0.55+r()*0.4).toFixed(2)}"/>`;
+  }
+  for(let i=0;i<4;i++){
+    s+=`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*300).toFixed(0)}" r="${(10+r()*38).toFixed(0)}" fill="${p[Math.floor(r()*p.length)]}" opacity="${(0.4+r()*0.4).toFixed(2)}"/>`;
+  }
+  return s+'</svg>';
+}
+
+function aiAnalyze(st){
+  const r=rng(st.seed*31+5);
+  const scores=RUBRIC.map(()=>Math.min(4,Math.max(1,Math.round(1.6+r()*2.6))));
+  return {scores, fb:buildFb(scores)};
+}
+function buildFb(scores){
+  const hiI=scores.indexOf(Math.max(...scores)), loI=scores.indexOf(Math.min(...scores));
+  const hk=RUBRIC[hiI].k, lk=RUBRIC[loI].k;
+  return {
+    kuat:`${RUBRIC[hiI].n}: ${FB[hk].hi}`,
+    tingkat:`${RUBRIC[loI].n}: ${FB[lk].lo}`,
+    saran:FB[lk].tip
+  };
+}
+function narasi(st){
+  const sc=st.scores, hiI=sc.indexOf(Math.max(...sc)), loI=sc.indexOf(Math.min(...sc));
+  return `${st.name} menunjukkan capaian paling baik pada aspek ${RUBRIC[hiI].n.toLowerCase()} (${RUBRIC[hiI].d[sc[hiI]].toLowerCase()}). Aspek yang masih perlu dikembangkan adalah ${RUBRIC[loI].n.toLowerCase()}; ${FB[RUBRIC[loI].k].tip.charAt(0).toLowerCase()+FB[RUBRIC[loI].k].tip.slice(1)} Nilai akhir karya: ${nilai(sc)}.`;
+}
+
+// dua siswa sudah disetujui agar rekap tidak kosong
+[0,1].forEach(i=>{const s=state.students[i];const a=aiAnalyze(s);s.scores=a.scores;s.fb=a.fb;s.status=2;});
+
+/* ---------- Views ---------- */
+const STEPS=['Kelas','Perangkat Ajar','Rubrik','Penilaian Karya','Rekap & Rapor'];
+
+function renderNav(){
+  $('#nav').innerHTML=STEPS.map((t,i)=>`<button class="${i===state.view?'on':''}" data-v="${i}"><span class="n">${i+1}</span>${t}</button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.view=+b.dataset.v;render()});
+}
+
+function vKelas(){
+  const done=state.students.filter(s=>s.status===2).length;
+  return `<h2>Kelas XI-3 · Seni Rupa</h2><p class="sub">Satu tempat untuk perangkat ajar, rubrik, dan penilaian karya.</p>
+  <div class="grid g3">
+    <div class="card stat">${state.students.length}<small>siswa terdaftar (demo)</small></div>
+    <div class="card stat">${done}/${state.students.length}<small>karya sudah disetujui guru</small></div>
+    <div class="card stat">${state.generated?'Siap':'Belum'}<small>paket perangkat ajar</small></div>
+  </div>
+  <div class="card"><b>Alur kerja</b>
+    <ol><li>Buat paket perangkat ajar dari topik (modul, LKPD, rubrik, soal).</li>
+    <li>Rubrik dari langkah 1 otomatis menjadi dasar penilaian.</li>
+    <li>Siswa mengunggah foto karya, AI mengusulkan skor dan umpan balik.</li>
+    <li>Guru menyetujui atau mengubah. Rekap dan rapor naratif tersusun otomatis.</li></ol>
+    <button class="btn" onclick="go(1)">Mulai: buat perangkat ajar</button></div>
+  <p class="note">Catatan privasi: untuk produk nyata, kirim ke AI hanya kode siswa (bukan nama) dan minta persetujuan sekolah/orang tua.</p>`;
+}
+
+const GEN_TABS=['Modul Ajar','LKPD','Rubrik','Soal Kuis'];
+function genDoc(i){
+  const topik=($('#topik')&&$('#topik').value)||'Seni lukis ekspresionisme';
+  if(i===0) return `<div class="doc"><h3>Identitas</h3><p>Mapel: Seni Rupa · Fase F · Kelas XI · Alokasi: 3 × 2 JP<br>Topik: <b>${topik}</b></p>
+  <h3>Tujuan pembelajaran</h3><ul><li>Menjelaskan ciri ekspresionisme dan konteks lahirnya.</li><li>Menciptakan lukisan yang mengekspresikan satu emosi.</li><li>Merefleksikan karya sendiri dan karya teman.</li></ul>
+  <h3>Kegiatan</h3><ol><li><b>Pertemuan 1:</b> apresiasi karya (Munch, Kirchner), diskusi emosi dan warna.</li><li><b>Pertemuan 2:</b> sketsa, pemilihan palet, praktik melukis.</li><li><b>Pertemuan 3:</b> finishing, pameran mini, refleksi.</li></ol>
+  <h3>Asesmen</h3><p>Penilaian karya memakai rubrik pada tab <i>Rubrik</i>; refleksi tertulis sebagai penilaian pendukung.</p></div>`;
+  if(i===1) return `<div class="doc"><h3>LKPD: Melukis satu emosi</h3><ol><li>Pilih satu kata emosi: ________</li><li>Pilih 3 warna dan tulis alasannya.</li><li>Buat 3 sketsa kecil (komposisi berbeda), pilih satu.</li><li>Lukis dengan goresan tebal-tipis; foto karya untuk diunggah.</li><li>Refleksi: bagian mana yang paling kuat menyampaikan emosimu?</li></ol></div>`;
+  if(i===2) return `<div class="scroll"><table><tr><th>Kriteria</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>${RUBRIC.map(c=>`<tr><td><b>${c.n}</b></td><td>${c.d[4]}</td><td>${c.d[3]}</td><td>${c.d[2]}</td><td>${c.d[1]}</td></tr>`).join('')}</table></div><p class="note">Rubrik ini dipakai ulang pada tahap Penilaian Karya.</p>`;
+  return `<div class="doc"><ol><li>Seniman yang dianggap pelopor ekspresionisme lewat "The Scream" adalah ...</li><li>Ciri utama warna dalam ekspresionisme adalah ...</li><li>Mengapa distorsi bentuk dipakai pelukis ekspresionis?</li><li>Sebutkan dua perbedaan impresionisme dan ekspresionisme.</li><li>Kata sifat yang paling tepat untuk goresan ekspresif adalah ...</li></ol><p class="note">Contoh 5 dari 10 soal; kunci jawaban ikut dihasilkan.</p></div>`;
+}
+function vPerangkat(){
+  return `<h2>Perangkat Ajar</h2><p class="sub">Satu klik menghasilkan paket yang saling terkait.</p>
+  <div class="card"><div class="grid g3">
+    <div><label>Topik</label><select id="topik"><option>Seni lukis ekspresionisme</option><option>Gambar ilustrasi budaya Minangkabau</option><option>Desain poster kampanye</option></select></div>
+    <div><label>Fase / kelas</label><select><option>Fase F · XI</option><option>Fase E · X</option></select></div>
+    <div><label>Jumlah pertemuan</label><select><option>3 pertemuan</option><option>2 pertemuan</option><option>4 pertemuan</option></select></div>
+  </div><div class="row" style="margin-top:14px"><button class="btn" id="gen">${state.generated?'Buat ulang paket':'Buat paket perangkat ajar'}</button><span id="genst"></span></div></div>
+  ${state.generated?`<div class="card"><div class="tabs">${GEN_TABS.map((t,i)=>`<button class="${i===state.genTab?'on':''}" data-t="${i}">${t}</button>`).join('')}</div>${genDoc(state.genTab)}
+  <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="toast('Demo: unduhan belum aktif')">Unduh .docx</button><button class="btn" onclick="go(3)">Lanjut ke penilaian karya</button></div></div>`:''}`;
+}
+
+function vRubrik(){
+  return `<h2>Rubrik Penilaian</h2><p class="sub">Dibuat sekali, dipakai di perangkat ajar dan penilaian karya.</p>
+  <div class="card scroll"><table><tr><th>Kriteria</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>${RUBRIC.map(c=>`<tr><td><b>${c.n}</b></td><td>${c.d[4]}</td><td>${c.d[3]}</td><td>${c.d[2]}</td><td>${c.d[1]}</td></tr>`).join('')}</table></div>
+  <p class="note">Nilai = total skor ÷ 16 × 100. Pada produk nyata, bobot dan deskriptor bisa diedit guru.</p>`;
+}
+
+function scoreRow(c,i,st){
+  const v=st.scores?st.scores[i]:null;
+  return `<div class="crit"><div><b>${c.n}</b><div class="d">${v?c.d[v]:'Menunggu analisis'}</div></div>
+  <div class="score">${[1,2,3,4].map(n=>`<button class="${v===n?'on':''}" ${st.status===2||!st.scores?'disabled':''} data-c="${i}" data-n="${n}">${n}</button>`).join('')}</div></div>`;
+}
+function vNilai(){
+  const st=state.students[state.selected];
+  const pill=s=>['<span class="pill">Belum dianalisis</span>','<span class="pill s2">Menunggu persetujuan</span>','<span class="pill s3">Disetujui</span>'][s];
+  return `<h2>Penilaian Karya</h2><p class="sub">AI mengusulkan skor dan umpan balik. Guru yang memutuskan.</p>
+  <div class="grid nilgrid">
+  <div><ul class="queue">${state.students.map(s=>`<li data-i="${s.id}" class="${s.id===st.id?'on':''}"><span style="width:54px;height:40px;flex:0 0 auto">${art(s.seed)}</span><span class="nm">${s.name}</span>${pill(s.status).replace('class="pill','class="pill')}</li>`).join('')}</ul></div>
+  <div class="card"><div class="grid g2">
+    <div class="art">${art(st.seed)}<p class="note" style="margin:8px 0 0">Karya: ${st.name} · ilustrasi demo</p></div>
+    <div>${st.loading?`<p><span class="spin"></span>AI membaca karya berdasarkan rubrik...</p>`:
+      st.status===0?`<p>Karya belum dianalisis.</p><button class="btn" id="an">Analisis dengan AI</button>`:
+      RUBRIC.map((c,i)=>scoreRow(c,i,st)).join('')+
+      `<p style="margin:10px 0 0"><b>Total ${total(st.scores)}/16 · Nilai ${nilai(st.scores)}</b></p>`}</div>
+  </div>
+  ${st.fb&&!st.loading?`<div class="fb"><b>Kekuatan</b>${st.fb.kuat}</div><div class="fb"><b>Perlu ditingkatkan</b>${st.fb.tingkat}</div><div class="fb"><b>Saran praktis</b><textarea id="saran">${st.fb.saran}</textarea></div>
+  <div class="row" style="margin-top:12px">${st.status===1?`<button class="btn ok" id="ok">Setujui penilaian</button><span class="note">Anda bisa ubah skor dulu. Siswa belum melihat nilai.</span>`:`<span class="pill s3">Disetujui guru</span><button class="btn ghost" id="re">Buka kembali</button>`}</div>`:''}
+  </div></div>`;
+}
+
+function vRekap(){
+  const rows=state.students, ap=rows.filter(s=>s.status===2), pct=Math.round(ap.length/rows.length*100);
+  const avg=ap.length?Math.round(ap.reduce((a,s)=>a+nilai(s.scores),0)/ap.length):0;
+  return `<h2>Rekap & Rapor</h2><p class="sub">Dihitung dari penilaian yang sudah Anda setujui.</p>
+  <div class="card"><div class="row" style="justify-content:space-between"><span><b>${ap.length}</b> dari ${rows.length} karya disetujui · rata-rata nilai <b>${avg}</b></span><button class="btn ghost" id="csv">Unduh CSV</button></div>
+  <div class="bar" style="margin-top:10px"><i style="width:${pct}%"></i></div></div>
+  <div class="card scroll"><table><tr><th>Siswa</th>${RUBRIC.map(c=>`<th>${c.n.split(' ')[0]}</th>`).join('')}<th>Nilai</th><th>Status</th></tr>
+  ${rows.map(s=>`<tr><td>${s.name}</td>${RUBRIC.map((c,i)=>`<td>${s.status===2?s.scores[i]:'-'}</td>`).join('')}<td><b>${s.status===2?nilai(s.scores):'-'}</b></td><td>${['Belum','Menunggu','Disetujui'][s.status]}</td></tr>`).join('')}</table></div>
+  <h2 style="font-size:17px">Rapor naratif otomatis</h2>
+  ${ap.length?ap.map(s=>`<div class="card"><b>${s.name}</b><p style="margin:6px 0 0">${narasi(s)}</p></div>`).join(''):'<div class="card empty">Belum ada karya yang disetujui. Selesaikan di tab Penilaian Karya.</div>'}`;
+}
+
+/* ---------- Router & events ---------- */
+function go(v){state.view=v;render();window.scrollTo(0,0)}
+function render(){
+  renderNav();
+  const m=$('#view');
+  m.innerHTML=[vKelas,vPerangkat,vRubrik,vNilai,vRekap][state.view]();
+  bind();
+}
+function bind(){
+  if(state.view===1){
+    $('#gen').onclick=()=>{
+      $('#gen').disabled=true;$('#genst').innerHTML='<span class="spin"></span>Menyusun modul, LKPD, rubrik, soal...';
+      setTimeout(()=>{state.generated=true;state.genTab=0;render();toast('Paket perangkat ajar siap')},1100);
+    };
+    document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{state.genTab=+b.dataset.t;const k=$('#topik').value;render();$('#topik').value=k});
+  }
+  if(state.view===3){
+    const st=state.students[state.selected];
+    document.querySelectorAll('.queue li').forEach(li=>li.onclick=()=>{state.selected=+li.dataset.i;render()});
+    const an=$('#an');
+    if(an) an.onclick=()=>{st.loading=true;render();setTimeout(()=>{const a=aiAnalyze(st);st.scores=a.scores;st.fb=a.fb;st.status=1;st.loading=false;render()},1300)};
+    document.querySelectorAll('.score button').forEach(b=>b.onclick=()=>{st.scores[+b.dataset.c]=+b.dataset.n;st.fb=buildFb(st.scores);render()});
+    const ok=$('#ok');if(ok) ok.onclick=()=>{st.fb.saran=$('#saran').value;st.status=2;render();toast('Penilaian disetujui')};
+    const re=$('#re');if(re) re.onclick=()=>{st.status=1;render()};
+  }
+  if(state.view===4){
+    $('#csv').onclick=()=>{
+      const h=['Siswa',...RUBRIC.map(c=>c.n),'Total','Nilai'];
+      const lines=state.students.filter(s=>s.status===2).map(s=>[s.name,...s.scores,total(s.scores),nilai(s.scores)].join(','));
+      const blob=new Blob([[h.join(','),...lines].join('\n')],{type:'text/csv'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rekap-xi3.csv';a.click();
+    };
+  }
+}
+render();
+</script>
+</body>
+</html>
